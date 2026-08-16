@@ -42,8 +42,8 @@ function Experience() {
           <OnlyYou />
           <LoveMoment />
           <ThankYouTimeline />
-          <MemoryCards />
           <Finale />
+          <SongSurprise />
         </div>
       )}
     </main>
@@ -61,7 +61,7 @@ function Opening() {
           transition={{ duration: 2.4, ease: [0.22, 0.61, 0.36, 1] }}
           className="text-[0.65rem] tracking-[0.42em] text-muted-foreground uppercase"
         >
-          for you, quietly
+          for Gala, quietly
         </motion.p>
 
         <motion.h1
@@ -88,7 +88,7 @@ function Opening() {
           transition={{ duration: 2, delay: 3.2, ease: [0.22, 0.61, 0.36, 1] }}
           className="mt-10 max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl"
         >
-          But somehow you became one of the most important people in my life.
+          But somehow you became one of the most important people in my life, Gala.
         </motion.p>
 
         <motion.div
@@ -298,84 +298,6 @@ function ThankYouTimeline() {
   );
 }
 
-/* ── 6. Memory cards ────────────────────────────────────────── */
-const memories = [
-  { front: "your voice", back: "It calms something in me that nothing else reaches." },
-  { front: "your laugh", back: "I'd do something embarrassing again just to hear it." },
-  { front: "the late talks", back: "Hours disappeared and I never once wanted them back." },
-  { front: "your kindness", back: "You're gentle with people who can't repay you. I noticed." },
-  { front: "the silences", back: "Even saying nothing with you feels like company." },
-  { front: "your strength", back: "You carry more than you admit, and still show up warm." },
-];
-
-function MemoryCards() {
-  const [open, setOpen] = useState<number | null>(null);
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-
-  return (
-    <section
-      className={section}
-      onPointerMove={(e) => {
-        const r = e.currentTarget.getBoundingClientRect();
-        setPos({ x: (e.clientX - r.left) / r.width - 0.5, y: (e.clientY - r.top) / r.height - 0.5 });
-      }}
-      onPointerLeave={() => setPos({ x: 0, y: 0 })}
-    >
-      <Reveal>
-        <p className="text-[0.65rem] tracking-[0.42em] text-muted-foreground uppercase">
-          little things
-        </p>
-        <h2 className="mt-5 text-3xl leading-tight sm:text-5xl">Tap anything to hear the rest</h2>
-      </Reveal>
-
-      <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5">
-        {memories.map((m, i) => {
-          const depth = ((i % 3) + 1) * 6;
-          const isOpen = open === i;
-          return (
-            <Reveal key={m.front} delay={i * 0.06}>
-              <motion.button
-                type="button"
-                onClick={() => setOpen(isOpen ? null : i)}
-                animate={{ x: pos.x * depth, y: pos.y * depth }}
-                transition={{ type: "spring", stiffness: 60, damping: 20 }}
-                whileTap={{ scale: 0.96 }}
-                className="glass sheen flex min-h-[9.5rem] w-full flex-col justify-end p-5 text-left sm:min-h-[11rem]"
-              >
-                <AnimatePresence mode="wait" initial={false}>
-                  {isOpen ? (
-                    <motion.span
-                      key="back"
-                      initial={{ opacity: 0, filter: "blur(10px)", y: 8 }}
-                      animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
-                      exit={{ opacity: 0, filter: "blur(10px)" }}
-                      transition={{ duration: 0.6 }}
-                      className="text-sm leading-relaxed text-foreground/90"
-                    >
-                      {m.back}
-                    </motion.span>
-                  ) : (
-                    <motion.span
-                      key="front"
-                      initial={{ opacity: 0, filter: "blur(10px)" }}
-                      animate={{ opacity: 1, filter: "blur(0px)" }}
-                      exit={{ opacity: 0, filter: "blur(10px)" }}
-                      transition={{ duration: 0.6 }}
-                      className="font-display text-2xl text-blush italic sm:text-3xl"
-                    >
-                      {m.front}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </motion.button>
-            </Reveal>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
 /* ── 7. Finale ──────────────────────────────────────────────── */
 function Finale() {
   const [revealed, setRevealed] = useState(false);
@@ -442,6 +364,106 @@ function Finale() {
             </AnimatePresence>
           </div>
         </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ── 8. A song, hidden at the end ───────────────────────────── */
+function SongSurprise() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <section className="relative flex min-h-[100svh] items-center overflow-hidden pb-32">
+      <Particles count={18} />
+      <div
+        className="pointer-events-none absolute top-1/2 left-1/2 h-[60vmin] w-[60vmin] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-50 blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, color-mix(in oklab, var(--rose) 40%, transparent), transparent 70%)",
+        }}
+      />
+      <div className={`${section} text-center`}>
+        <AnimatePresence mode="wait" initial={false}>
+          {!open ? (
+            <motion.div
+              key="closed"
+              exit={{ opacity: 0, scale: 0.96, filter: "blur(14px)" }}
+              transition={{ duration: 0.9 }}
+            >
+              <Reveal>
+                <p className="text-[0.65rem] tracking-[0.42em] text-muted-foreground uppercase">
+                  one last surprise
+                </p>
+                <h2 className="mt-5 text-3xl leading-tight sm:text-5xl">
+                  There's a song I can never hear
+                  <br />
+                  <span className="italic text-blush">without thinking of you</span>
+                </h2>
+              </Reveal>
+              <Reveal delay={0.3}>
+                <motion.button
+                  type="button"
+                  onClick={() => setOpen(true)}
+                  whileTap={{ scale: 0.95 }}
+                  animate={{ scale: [1, 1.03, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  className="glass sheen mt-14 px-8 py-4 text-sm tracking-[0.3em] uppercase transition-transform duration-500 hover:-translate-y-0.5"
+                  style={{ boxShadow: "var(--shadow-dream)" }}
+                >
+                  Open your surprise
+                </motion.button>
+              </Reveal>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="open"
+              initial={{ opacity: 0, scale: 1.06, filter: "blur(20px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              transition={{ duration: 1.6, ease: [0.22, 0.61, 0.36, 1] }}
+            >
+              <p className="font-script text-4xl leading-tight text-blush sm:text-6xl">
+                Be My Baby
+              </p>
+              <p className="mt-4 text-sm tracking-[0.3em] text-muted-foreground uppercase">
+                the ronettes — for Gala
+              </p>
+
+              <div
+                className="glass sheen mx-auto mt-10 max-w-xl overflow-hidden p-3"
+                style={{ boxShadow: "var(--shadow-dream)" }}
+              >
+                <div className="relative aspect-video w-full overflow-hidden rounded-[calc(var(--radius))]">
+                  <iframe
+                    className="absolute inset-0 h-full w-full"
+                    src="https://www.youtube-nocookie.com/embed/jSPpbOGnFgk?autoplay=1&rel=0"
+                    title="The Ronettes — Be My Baby"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+
+              <motion.p
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.4, delay: 1.2 }}
+                className="mx-auto mt-12 max-w-lg text-lg leading-relaxed text-foreground/85 sm:text-xl"
+              >
+                So — will you be my baby, Gala?
+              </motion.p>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.6, delay: 2.2 }}
+                className="font-script mt-10 text-3xl text-blush sm:text-4xl"
+              >
+                always yours, Shourya
+              </motion.p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );
